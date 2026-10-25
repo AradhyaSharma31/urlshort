@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { createShortUrl } from '../services/api';
 
 export default function UrlShortenerForm({ onUrlCreated }) {

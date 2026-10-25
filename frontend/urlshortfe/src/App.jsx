@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import UrlShortenerForm from './components/UrlShortenerForm';
 import UrlList from './components/UrlList';
 import AnalyticsModal from './components/AnalyticsModal';
@@ -16,21 +16,25 @@ export default function App() {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const loadUrls = async () => {
-    try {
-      setLoading(true);
-      const data = await fetchUrls();
-      setUrls(data);
-    } catch (err) {
-      console.error(err);
-      showToast('Could not connect to backend server. Make sure Spring Boot is running on port 8080.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    loadUrls();
+    let ignore = false;
+    fetchUrls()
+      .then((data) => {
+        if (!ignore) {
+          setUrls(data);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!ignore) {
+          setLoading(false);
+          showToast('Could not connect to backend server. Make sure Spring Boot is running on port 8090.');
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const handleUrlCreated = (newUrl) => {
@@ -43,7 +47,7 @@ export default function App() {
       const updated = await toggleUrlStatus(id);
       setUrls((prev) => prev.map((u) => (u.id === id ? updated : u)));
       showToast(`Link is now ${updated.isActive ? 'active' : 'disabled'}`);
-    } catch (err) {
+    } catch {
       showToast('Failed to update status');
     }
   };
@@ -54,7 +58,7 @@ export default function App() {
       await deleteUrl(id);
       setUrls((prev) => prev.filter((u) => u.id !== id));
       showToast('Short link removed');
-    } catch (err) {
+    } catch {
       showToast('Failed to delete link');
     }
   };

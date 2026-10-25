@@ -38,7 +38,7 @@ export async function fetchUrls() {
     return Array.isArray(body) ? body : [];
   } catch (err) {
     if (err.message && err.message.includes('Failed to fetch')) {
-      throw new Error('Could not connect to backend server at port 8090. Make sure Spring Boot is running.');
+      throw new Error('Could not connect to backend server at port 8090. Make sure Spring Boot is running.', { cause: err });
     }
     throw err;
   }
@@ -58,7 +58,7 @@ export async function createShortUrl(data) {
     return body;
   } catch (err) {
     if (err.message && err.message.includes('Failed to fetch')) {
-      throw new Error('Could not connect to backend server at port 8090.');
+      throw new Error('Could not connect to backend server at port 8090.', { cause: err });
     }
     throw err;
   }
@@ -74,7 +74,7 @@ export async function fetchAnalytics(shortCode) {
     return body;
   } catch (err) {
     if (err.message && err.message.includes('Failed to fetch')) {
-      throw new Error('Could not connect to backend server at port 8090.');
+      throw new Error('Could not connect to backend server at port 8090.', { cause: err });
     }
     throw err;
   }
@@ -92,7 +92,7 @@ export async function toggleUrlStatus(id) {
     return body;
   } catch (err) {
     if (err.message && err.message.includes('Failed to fetch')) {
-      throw new Error('Could not connect to backend server at port 8090.');
+      throw new Error('Could not connect to backend server at port 8090.', { cause: err });
     }
     throw err;
   }
@@ -110,7 +110,7 @@ export async function deleteUrl(id) {
     return body;
   } catch (err) {
     if (err.message && err.message.includes('Failed to fetch')) {
-      throw new Error('Could not connect to backend server at port 8090.');
+      throw new Error('Could not connect to backend server at port 8090.', { cause: err });
     }
     throw err;
   }

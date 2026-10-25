@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchAnalytics } from '../services/api';
 
 export default function AnalyticsModal({ shortCode, onClose }) {
@@ -8,7 +8,6 @@ export default function AnalyticsModal({ shortCode, onClose }) {
 
   useEffect(() => {
     let isMounted = true;
-    setLoading(true);
     fetchAnalytics(shortCode)
       .then((res) => {
         if (isMounted) setData(res);

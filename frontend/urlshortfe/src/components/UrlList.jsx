@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export default function UrlList({ urls, loading, onSelectAnalytics, onToggleActive, onDelete }) {
   const [copiedId, setCopiedId] = useState(null);
