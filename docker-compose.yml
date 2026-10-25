@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: urlshort-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: urlshort
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: $$DatA_BasE26
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d urlshort"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: guywhobuildsandtests/urlshortbe:latest
+    container_name: urlshort-backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8090
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/urlshort
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: $$DatA_BasE26
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      APP_BASE_URL: http://localhost:8090
+    ports:
+      - "8090:8090"
+
+  frontend:
+    image: guywhobuildsandtests/urlshortfe:latest
+    container_name: urlshort-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  postgres_data:
